@@ -28,10 +28,11 @@ jobs:
     - name: Build
       run: |
         npm install
-        npx webpack
+        #npx webpack
+        npm run build
       
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: ./ # The folder the action should deploy.
+          folder: build # The folder the action should deploy.
