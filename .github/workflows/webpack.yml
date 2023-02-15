@@ -29,22 +29,10 @@ jobs:
       run: |
         npm install
         npx webpack
-    
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v3
-      with:
-          name: dist-without-markdown
-          path: |
-            dist
-            !dist/**/*.md
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v3
-      with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
-  
+      
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: public # The folder the action should deploy.
+          folder: / # The folder the action should deploy.
+          exclude: .github
