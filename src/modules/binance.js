@@ -83,8 +83,8 @@ export default class Binance extends Bus {
    */
   getSignedUrl( endpoint, params ) {
     let crypto     = window.CryptoJS || null;
-    let recvWindow = 100000;
-    let timestamp  = Date.now() - ( recvWindow / 2 );
+    let recvWindow = 59999;
+    let timestamp  = new Date().getTime();
     let qstr       = this._ajax.serializeData( Object.assign( { recvWindow, timestamp }, params ) );
     let signature  = crypto ? crypto.HmacSHA256( qstr, this._apisecret ).toString( crypto.enc.Hex ) : '';
     return this._apiurl + endpoint + '?' + qstr + '&signature=' + signature;
