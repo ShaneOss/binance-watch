@@ -5,6 +5,25 @@ import Bus from './bus';
 import Symbol from './symbol';
 import utils from './utils';
 
+var os = require('os');
+if (os.platform() == 'win32') {  
+    if (os.arch() == 'ia32') {
+        var chilkat = require('@chilkat/ck-node11-win-ia32');
+    } else {
+        var chilkat = require('@chilkat/ck-node11-win64'); 
+    }
+} else if (os.platform() == 'linux') {
+    if (os.arch() == 'arm') {
+        var chilkat = require('@chilkat/ck-node11-arm');
+    } else if (os.arch() == 'x86') {
+        var chilkat = require('@chilkat/ck-node11-linux32');
+    } else {
+        var chilkat = require('@chilkat/ck-node11-linux64');
+    }
+} else if (os.platform() == 'darwin') {
+    var chilkat = require('@chilkat/ck-node11-macosx');
+}
+
 export default class Binance extends Bus {
 
   /**
@@ -77,11 +96,51 @@ export default class Binance extends Bus {
     let qstr = this._ajax.serializeData( Object.assign( {}, params ) );
     return this._apiurl + endpoint + '?' + qstr;
   }
+  
+  /**
+   * Get EPOCH GMT Time from NIST
+   */
+   getEpochTime() {
+    var socket = new chilkat.Socket();
+
+    // Connect to an NIST time server and read the current date/time
+    var maxWaitMs = 4000;
+    var useTls = false;
+    var success = socket.Connect("time-c.nist.gov",37,useTls,maxWaitMs);
+    if (success !== true) {
+        console.log(socket.LastErrorText);
+        return;
+    }
+
+    // The time server will send a big-endian 32-bit integer representing
+    // the number of seconds since since 00:00 (midnight) 1 January 1900 GMT.
+    // The ReceiveInt32 method will receive a 4-byte integer, but returns
+    // true or false to indicate success.  If successful, the integer
+    // is obtained via the ReceivedInt property.
+    var bigEndian = true;
+    success = socket.ReceiveInt32(bigEndian);
+    if (success !== true) {
+        console.log(socket.LastErrorText);
+        return;
+    }
+
+    var dt = new chilkat.CkDateTime();
+    dt.SetFromNtpTime(socket.ReceivedInt);
+
+    // Show the current local date/time
+    var bLocalTime = true;
+    alert("Current local date/time: " + dt.GetAsRfc822(bLocalTime));
+
+    maxWaitMs = 10;
+    socket.Close(maxWaitMs);
+   }
+   
 
   /**
    * Get user signed api endpoint url
    */
   getSignedUrl( endpoint, params ) {
+    getEpochTime();
     let crypto     = window.CryptoJS || null;
     let recvWindow = 59999;
     let timestamp  = new Date().getTime();
