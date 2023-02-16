@@ -117,7 +117,7 @@
           <div class="tablelist-header">
             <div class="tablelist-row flex-row flex-middle flex-space">
               <div class="push-right">
-                <a class="icon-network iconLeft" href="https://www.binance.com/userCenter/balances.html" target="_blank">Manage account on Binance</a>
+                <a class="icon-network iconLeft" href="https://www.binance.com/en/my/wallet/account/overview" target="_blank">Manage account on Binance</a>
               </div>
               <div class="text-clip">
                 <span class="text-info">Updated</span> &nbsp;
