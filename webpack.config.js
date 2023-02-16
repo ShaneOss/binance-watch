@@ -55,7 +55,6 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         include: [
-            "/src",
             "/public/js"
         ],
         loader: 'babel-loader',
