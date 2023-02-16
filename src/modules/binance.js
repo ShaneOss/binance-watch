@@ -266,9 +266,11 @@ export default class Binance extends Bus {
     price = Number( price ).toFixed( 8 );
     quantity = Number( quantity ).toFixed( 0 );
     inforce = String( inforce || 'FOK' );
+    let quoteOrderQty = Number(price * quantity).toFixed(8);
 
-    let params = { symbol, side, type, quantity };
-    if ( type === 'LIMIT' ) Object.assign( params, { price, timeInForce: inforce } );
+    let params = { symbol, side, type };
+    if (type === 'LIMIT') Object.assign(params, { quantity, price, timeInForce: inforce });
+    if (type === 'MARKET') Object.assign(params, { quoteOrderQty });
     Object.assign( params, { newOrderRespType: 'RESULT' } );
 
     this._ajax.post( this.getSignedUrl( '/v3/order', params ), {
