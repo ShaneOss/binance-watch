@@ -163,7 +163,7 @@ export default class Binance extends Bus {
       let asset  = String( t.a || t.asset || '' );
       let pair   = ( asset === 'BTC' ) ? 'USDT' : 'BTC';
       let route  = '/symbol/'+ asset + pair;
-      let name   = this._names[ asset ] || asset;
+      let name   = asset;
       let free   = parseFloat( t.f || t.free ) || 0;
       let locked = parseFloat( t.l || t.locked ) || 0;
       let total  = ( free + locked );
