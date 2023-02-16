@@ -82,7 +82,6 @@ export default class Binance extends Bus {
    * Get user signed api endpoint url
    */
   getSignedUrl( endpoint, params ) {
-    getEpochTime();
     let crypto     = window.CryptoJS || null;
     let recvWindow = 59999;
     let timestamp  = new Date().getTime();
