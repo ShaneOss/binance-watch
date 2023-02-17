@@ -1156,7 +1156,6 @@ export default {
     // check price ticker for buy trigger
     checkTradeBuy() {
       if ( !this.botActive ) return;
-      this.CheckTradeSell();
       this.watcher.check( this.priceData, ( p, pc, vc, t ) => {
 
         // calculate order amount and total
@@ -1181,6 +1180,7 @@ export default {
 
     // check if a trade needs to be sold due to stop loss or profit
     checkTradeSell() {
+      if ( !this.botActive ) return;
       let profit = Number( this.watchOptions.priceProfit );
       let stop   = Math.abs( this.watchOptions.priceStop ) * -1;
       let total  = 0;
