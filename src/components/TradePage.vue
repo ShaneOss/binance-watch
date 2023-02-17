@@ -1263,7 +1263,7 @@ export default {
       let type    = String( this.watchOptions.orderType );
       let inforce = String( this.watchOptions.orderTime );
 
-      if ( this.liveMode === true ) { this.$binance.placeOrder( symbol, type, side, price, quantity, inforce ); }
+      if ( this.liveMode === true ) { this.$binance.placeOrder( symbol, type, side, price, quantity, inforce, quoteOrderQty ); }
       else { this.$binance.placeFakeOrder( symbol, type, side, price, quantity ); } // fake it til you make it.
     },
 
