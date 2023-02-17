@@ -258,8 +258,9 @@ export default class Binance extends Bus {
    * @param {number}  price     Book price
    * @param {number}  quantity  Order quantity
    * @param {string}  inforce   Time inforce type (GTC, IOC, FOK)
+   * @param {string}  quoteOrderQty Quote order quantity
    */
-  placeOrder( symbol, type, side, price, quantity, quoteOrderQty, inforce ) {
+  placeOrder( symbol, type, side, price, quantity, inforce, quoteOrderQty ) {
     if ( !this._apikey || !this._ajax ) return;
     if (!symbol || !type || !side || (!quantity || !quoteOrderQty) || quantity <= 0 || quoteOrderQty <= 0) return;
 
