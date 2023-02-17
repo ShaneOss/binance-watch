@@ -260,31 +260,33 @@ export default class Binance extends Bus {
    * @param {string}  inforce   Time inforce type (GTC, IOC, FOK)
    * @param {string}  quoteOrderQty Quote order quantity
    */
-  placeOrder( symbol, type, side, price, quantity, inforce, quoteOrderQty ) {
-    if ( !this._apikey || !this._ajax ) return;
-    if (!symbol || !type || !side || (!quantity || !quoteOrderQty) || quantity <= 0 || quoteOrderQty <= 0) return;
+  placeOrder(symbol, type, side, price, quantity, inforce, quoteOrderQty) {
+    if (!this._apikey || !this._ajax) return;
+    if (!symbol || !type || !side && (!quantity || !quoteOrderQty) && (quantity <= 0 || quoteOrderQty <= 0)) return;
 
-    price = Number( price ).toFixed( 8 );
-    quantity = Number( quantity ).toFixed( 0 );
-    inforce = String( inforce || 'FOK' );
+    price = Number(price).toFixed(8);
+    quantity = Number(quantity).toFixed(0);
+    inforce = String(inforce || 'FOK');
+    
+    let params = { symbol, type, side };
+    if (type == 'LIMIT') Object.assign(params, { price, quantity, timeInForce: inforce });
+    if (type == 'MARKET' && side == 'BUY') Object.assign(params, { quoteOrderQty });
+    if (type == 'MARKET' && side == 'SELL') Object.assign(params, { quantity });
+    //check market_lot_size
+    //check precision
 
-    let params = { symbol, side, type };
-    if (type === 'LIMIT') Object.assign(params, { quantity, price, timeInForce: inforce });
-    if (type === 'MARKET' && side === 'BUY') Object.assign(params, { quoteOrderQty });
-    if (type === 'MARKET' && side === 'SELL') Object.assign(params, { quantity, price });
-    Object.assign( params, { newOrderRespType: 'RESULT' } );
-
-    this._ajax.post( this.getSignedUrl( '/v3/order', params ), {
+    Object.assign(params, { newOrderRespType: 'RESULT' });
+    this._ajax.post(this.getSignedUrl('/v3/order', params), {
       type: 'json',
       headers: { 'X-MBX-APIKEY': this._apikey },
 
-      success: ( xhr, status, response ) => {
-        let order = this.parseOrderData( response );
-        this.emit( 'book_create', order );
+      success: (xhr, status, response) => {
+        let order = this.parseOrderData(response);
+        this.emit('book_create', order);
       },
-      error: ( xhr, status, error ) => {
-        let order = this.fakeOrderData( symbol, type, side, price, quantity, 'REJECTED' );
-        this.emit( 'book_fail', order, error );
+      error: (xhr, status, error) => {
+        let order = this.fakeOrderData(symbol, type, side, price, quantity, 'REJECTED');
+        this.emit('book_fail', order, error);
       }
     });
   }
