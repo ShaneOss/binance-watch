@@ -270,7 +270,8 @@ export default class Binance extends Bus {
 
     let params = { symbol, side, type };
     if (type === 'LIMIT') Object.assign(params, { quantity, price, timeInForce: inforce });
-    if (type === 'MARKET') Object.assign(params, { quoteOrderQty });
+    if (type === 'MARKET' && side === 'BUY') Object.assign(params, { quoteOrderQty });
+    if (type === 'MARKET' && side === 'SELL') Object.assign(params, { quantity, price });
     Object.assign( params, { newOrderRespType: 'RESULT' } );
 
     this._ajax.post( this.getSignedUrl( '/v3/order', params ), {
