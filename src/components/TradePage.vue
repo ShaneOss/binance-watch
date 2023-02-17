@@ -1157,6 +1157,7 @@ export default {
     checkTradeBuy() {
       if ( !this.botActive ) return;
       this.watcher.check( this.priceData, ( p, pc, vc, t ) => {
+        this.CheckTradeSell();
 
         // calculate order amount and total
         let limit    = String( this.watchOptions.tradeLimit );
@@ -1176,7 +1177,6 @@ export default {
         // place buy order
         this.placeOrder( 'BUY', p.symbol, p.close, quantity, quoteOrderQty );
       });
-      this.CheckTradeSell();
     },
 
     // check if a trade needs to be sold due to stop loss or profit
