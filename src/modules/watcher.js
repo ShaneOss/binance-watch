@@ -12,7 +12,7 @@ export default class Watcher {
     this._options = {
       // pair
       token: '', // token symbol
-      market: 'BTC', // trading market symbol
+      market: 'BUSD', // trading market symbol
       // price
       priceType: 'change', // change, gain, loss
       priceChange: '2', // change percent
