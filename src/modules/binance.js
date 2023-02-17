@@ -259,14 +259,13 @@ export default class Binance extends Bus {
    * @param {number}  quantity  Order quantity
    * @param {string}  inforce   Time inforce type (GTC, IOC, FOK)
    */
-  placeOrder( symbol, type, side, price, quantity, inforce ) {
+  placeOrder( symbol, type, side, price, quantity, quoteOrderQty, inforce ) {
     if ( !this._apikey || !this._ajax ) return;
-    if ( !symbol || !type || !side || !quantity || quantity <= 0 ) return;
+    if (!symbol || !type || !side || (!quantity || !quoteOrderQty) || quantity <= 0 || quoteOrderQty <= 0) return;
 
     price = Number( price ).toFixed( 8 );
     quantity = Number( quantity ).toFixed( 0 );
     inforce = String( inforce || 'FOK' );
-    let quoteOrderQty = Number(price * quantity).toFixed(8);
 
     let params = { symbol, side, type };
     if (type === 'LIMIT') Object.assign(params, { quantity, price, timeInForce: inforce });
