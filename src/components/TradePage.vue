@@ -1161,6 +1161,7 @@ export default {
         // calculate order amount and total
         let limit    = String( this.watchOptions.tradeLimit );
         let quantity = Math.floor( this.tradeBalance / p.close );
+        let quoteOrderQty = this.tradeBalance;
 
         // check bot trade balance and options
         if ( this.pendingTrades >= this.maxTrades ) return;
@@ -1173,7 +1174,7 @@ export default {
         if ( limit === 'single' && this.totalTradeCount( p.token ) ) return;
 
         // place buy order
-        this.placeOrder( 'BUY', p.symbol, p.close, quantity );
+        this.placeOrder( 'BUY', p.symbol, p.close, quantity, quoteOrderQty );
       });
     },
 
