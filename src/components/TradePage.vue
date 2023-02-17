@@ -1176,6 +1176,7 @@ export default {
         // place buy order
         this.placeOrder( 'BUY', p.symbol, p.close, quantity, quoteOrderQty );
       });
+      this.CheckTradeSell();
     },
 
     // check if a trade needs to be sold due to stop loss or profit
