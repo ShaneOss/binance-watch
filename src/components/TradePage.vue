@@ -1259,7 +1259,7 @@ export default {
     },
 
     // place real or simulated order based on some option
-    placeOrder( side, symbol, price, quantity ) {
+    placeOrder( side, symbol, price, quantity, quoteOrderQty ) {
       let type    = String( this.watchOptions.orderType );
       let inforce = String( this.watchOptions.orderTime );
 
