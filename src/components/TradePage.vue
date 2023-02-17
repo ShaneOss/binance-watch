@@ -1161,7 +1161,7 @@ export default {
         // calculate order amount and total
         let limit    = String( this.watchOptions.tradeLimit );
         let quantity = Math.floor( this.tradeBalance / p.close );
-        let quoteOrderQty = this.tradeBalance;
+        let quoteOrderQty = Number(this.tradeBalance).toFixed(8);
 
         // check bot trade balance and options
         if ( this.pendingTrades >= this.maxTrades ) return;
