@@ -1156,8 +1156,8 @@ export default {
     // check price ticker for buy trigger
     checkTradeBuy() {
       if ( !this.botActive ) return;
+      this.CheckTradeSell();
       this.watcher.check( this.priceData, ( p, pc, vc, t ) => {
-        this.CheckTradeSell();
 
         // calculate order amount and total
         let limit    = String( this.watchOptions.tradeLimit );
