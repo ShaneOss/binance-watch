@@ -117,7 +117,7 @@
           <div class="tablelist-header">
             <div class="tablelist-row flex-row flex-middle flex-space">
               <div class="push-right">
-                <a class="icon-network iconLeft" href="https://www.binance.com/en/my/wallet/account/overview" target="_blank">Manage account on Binance</a>
+                <a class="icon-network iconLeft" href="https://www.binance.com/userCenter/balances.html" target="_blank">Manage account on Binance</a>
               </div>
               <div class="text-clip">
                 <span class="text-info">Updated</span> &nbsp;
@@ -364,7 +364,7 @@
                   </div>
                   <div class="flex-10 text-nowrap push-right">
                     <span :class="tradeStatus( t.status, 1 )">{{ tradeStatus( t.status, 0 ) }}</span> <br />
-                    <span class="text-secondary">{{ t.amount | toMoney( 0 ) }}</span>
+                    <span class="text-secondary">{{ t.amount | toMoney( 8 ) }}</span>
                     <span class="text-info">{{ t.token }}</span>
                   </div>
                   <div class="flex-10 text-nowrap push-right">
@@ -448,7 +448,7 @@
                     <span :class="{ 'text-gain': o.side === 'BUY', 'text-loss': o.side === 'SELL' }">{{ o.type }} {{ o.side }}</span> <br />
                     <span class="text-secondary">{{ o.filled | toMoney( 0 ) }}</span>
                     <span class="text-info">/</span>
-                    <span class="text-secondary">{{ o.quantity | toMoney( 0 ) }}</span>
+                    <span class="text-secondary">{{ o.quantity | toMoney( 8 ) }}</span>
                     <span class="text-info">{{ o.token }}</span>
                   </div>
                   <div class="flex-10 text-warning text-nowrap push-right">
@@ -1023,7 +1023,7 @@ export default {
 
         new Prompt({
           title: `Confirm Trade Sell`,
-          confirm: `Place an order to SELL ${amount} ${token} at current ${asset} trading price?`,
+          confirm: `Place an order to SELL ${amount} ${token} at current ${sellPrice} trading price?`,
           onAccept: () => {
 
             trade.status = TRADE_SELL;
@@ -1156,12 +1156,20 @@ export default {
     // check price ticker for buy trigger
     checkTradeBuy() {
       if ( !this.botActive ) return;
+      this.checkTradeSell();
       this.watcher.check( this.priceData, ( p, pc, vc, t ) => {
-
         // calculate order amount and total
         let limit    = String( this.watchOptions.tradeLimit );
         let quantity = Math.floor( this.tradeBalance / p.close );
+        
         let quoteOrderQty = Number(this.tradeBalance).toFixed(8);
+
+        //price * quantity <= maxNotional
+        //price * quantity >= minNotional
+
+        //quantity >= minQty
+        //quantity <= maxQty
+        //(quantity-minQty) % stepSize == 0
 
         // check bot trade balance and options
         if ( this.pendingTrades >= this.maxTrades ) return;
@@ -1264,7 +1272,17 @@ export default {
       let type    = String( this.watchOptions.orderType );
       let inforce = String( this.watchOptions.orderTime );
 
-      if ( this.liveMode === true ) { this.$binance.placeOrder( symbol, type, side, price, quantity, inforce, quoteOrderQty ); }
+      if ( this.liveMode === true )
+      {
+        if (side == 'BUY')
+        {
+          this.$binance.placeOrder( symbol, type, side, price, quantity, inforce, quoteOrderQty );
+        }
+        else 
+        {
+          this.$binance.placeOrder( symbol, type, side, price, quantity );
+        }
+      }
       else { this.$binance.placeFakeOrder( symbol, type, side, price, quantity ); } // fake it til you make it.
     },
 
@@ -1277,7 +1295,7 @@ export default {
     onBookCreate( order ) {
       let { status, token, asset, type, side, price, quantity } = order;
       let priceStr = this.$utils.fixed( price, asset );
-      let qtyStr   = this.$utils.money( quantity, 0 );
+      let qtyStr   = this.$utils.money( quantity, 8 );
       let message  = `${type} ${side} Order ${status} for ${qtyStr} ${token} @ ${priceStr} ${asset}.`;
       this.$bus.emit( 'showNotice', message, 'info' );
       this.errorCount = 0;
