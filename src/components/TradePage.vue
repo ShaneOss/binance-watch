@@ -1119,6 +1119,7 @@ export default {
         if (asset === 'ETH' && total < 0.01) return false;
         if (asset === 'BNB' && total < 1) return false;
         if (asset === 'USDT' && total < 10) return false;
+        if (asset === 'BUSD' && total < 10) return false;
       }
       return true;
     },
@@ -1232,13 +1233,6 @@ export default {
         let quantity = Math.floor(this.tradeBalance / p.close);
 
         let quoteOrderQty = Number(this.tradeBalance).toFixed(8);
-
-        //price * quantity <= maxNotional
-        //price * quantity >= minNotional
-
-        //quantity >= minQty
-        //quantity <= maxQty
-        //(quantity-minQty) % stepSize == 0
 
         // check bot trade balance and options
         if (this.pendingTrades >= this.maxTrades) return;
